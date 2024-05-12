@@ -34,20 +34,89 @@ bin/cake server -p 8765
 
 Then visit `http://localhost:8765` to see the welcome page.
 
-## Update
 
-Since this skeleton is a starting point for your application and various files
-would have been modified as per your needs, there isn't a way to provide
-automated upgrades, so you have to do any updates manually.
+1. **Rest APIs setup CakePHP**: To set up CakePHP for creating these APIs, you'll need to follow these steps:
 
-## Configuration
 
-Read and edit the environment specific `config/app_local.php` and set up the
-`'Datasources'` and any other configuration relevant for your application.
-Other environment agnostic settings can be changed in `config/app.php`.
+2. **Database Configuration**: Configure your database settings in `config/app.php`. You'll find the database configuration array in this file. Set your database connection details there.
 
-## Layout
+3. **Generate the User Model**: You can use the CakePHP console to generate the User model. Run the following command in your terminal:
 
-The app skeleton uses [Milligram](https://milligram.io/) (v1.3) minimalist CSS
-framework by default. You can, however, replace it with any other library or
-custom styles.
+```bash
+bin/cake bake model Users
+```
+
+This command will generate the User model based on the table named `users` in your database.
+
+4. **Create the UsersController**: Create a new controller named `UsersController` using the CakePHP console:
+
+```bash
+bin/cake bake controller Users
+```
+
+This will create a UsersController with basic CRUD actions.
+
+5. **Implement the API Endpoints**: Use the code provided in my previous message to implement the API endpoints in the UsersController.
+
+6. **Setup Routes**: Configure the routes for your API endpoints in `config/routes.php`. You can use CakePHP's routing system to map URLs to controller actions.
+
+For example:
+
+```php
+// config/routes.php
+
+use Cake\Routing\Route\DashedRoute;
+
+Router::defaultRouteClass(DashedRoute::class);
+
+Router::scope('/', function ($routes) {
+    $routes->setExtensions(['json']); // Enable JSON response
+    $routes->resources('Users', [
+        'map' => [
+            'signup' => [
+                'action' => 'signup',
+                'method' => 'POST'
+            ],
+            'login' => [
+                'action' => 'login',
+                'method' => 'POST'
+            ],
+            'logout' => [
+                'action' => 'logout',
+                'method' => 'POST'
+            ],
+            'resetPassword' => [
+                'action' => 'resetPassword',
+                'method' => 'POST'
+            ],
+            'refreshToken' => [
+                'action' => 'refreshToken',
+                'method' => 'POST'
+            ]
+        ]
+    ]);
+});
+```
+
+7. **To test your signup API endpoint in Postman, follow these steps:**
+
+
+ **Set Request Details**:
+   - Choose the HTTP method as `POST`.
+   - Enter the URL for your signup API endpoint. For example, if your API endpoint is `http://localhost:8765/users/signup`, enter this URL in the request URL field.
+
+**Set Headers (Optional)**: If your API requires specific headers, such as `Content-Type`, `Accept`, or custom headers, add them to the request headers section. For example, you might need to set `Content-Type: application/json` if your API expects JSON data.
+
+**Set Request Body**: Depending on how your signup API endpoint is designed, you'll need to provide data in the request body. This typically includes information such as username, email, password, etc. If your API expects JSON data, select the "raw" option in the request body and enter the JSON data accordingly. For example:
+
+   ```json
+   {
+       "username": "example",
+       "email": "example@example.com",
+       "password": "password123"
+   }
+   ```
+
+**Send Request**: Once you've set up the request details and included the necessary data, click on the "Send" button to send the request to your API endpoint.
+
+
